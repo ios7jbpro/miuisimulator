@@ -16,7 +16,6 @@
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
-			android:theme="@style/NoActionBar"
 			android:screenOrientation="portrait"
 			android:windowSoftInputMode="stateHidden">
 			<intent-filter>
@@ -24,6 +23,13 @@
 				<category	android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
+		<activity
+			android:name=".LoadingActivity"
+			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+			android:hardwareAccelerated="true"
+			android:supportsPictureInPicture="true"
+			android:theme="@style/AppTheme.FullScreen"
+			android:windowSoftInputMode="stateHidden"/>
 		<activity
 			android:name=".DebugActivity"
 			android:screenOrientation="portrait"/>

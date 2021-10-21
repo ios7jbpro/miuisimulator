@@ -1,6 +1,7 @@
 package com.ios7jbpro.miuisimulator;
 
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.*;
 import android.app.*;
 import android.os.*;
 import android.view.*;
@@ -25,17 +26,20 @@ import org.json.*;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.content.Context;
 import android.os.Vibrator;
+import android.content.Intent;
+import android.net.Uri;
 import android.widget.CompoundButton;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.DialogFragment;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 	private Timer _timer = new Timer();
 	
 	private LinearLayout linear1;
@@ -48,9 +52,11 @@ public class MainActivity extends Activity {
 	private CheckBox checkbox1;
 	private TextView textview3;
 	private TextView textview4;
+	private ImageView imageview1;
 	
 	private TimerTask delay;
 	private Vibrator vibrate;
+	private Intent loading = new Intent();
 	
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
@@ -71,31 +77,55 @@ public class MainActivity extends Activity {
 		checkbox1 = (CheckBox) findViewById(R.id.checkbox1);
 		textview3 = (TextView) findViewById(R.id.textview3);
 		textview4 = (TextView) findViewById(R.id.textview4);
+		imageview1 = (ImageView) findViewById(R.id.imageview1);
 		vibrate = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		
 		checkbox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton _param1, boolean _param2)  {
 				final boolean _isChecked = _param2;
+				loading.setAction(Intent.ACTION_VIEW);
+				loading.setClass(getApplicationContext(), LoadingActivity.class);
+				startActivity(loading);
 				delay = new TimerTask() {
 					@Override
 					public void run() {
 						runOnUiThread(new Runnable() {
 							@Override
 							public void run() {
-								vibrate.vibrate((long)(250));
 								linear1.setVisibility(View.GONE);
 								linear2.setVisibility(View.GONE);
+								imageview1.setVisibility(View.GONE);
+								textview4.setVisibility(View.GONE);
+								textview3.setVisibility(View.GONE);
+								getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+								getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+								getWindow().setStatusBarColor(0xFFFFFFFF);
 								if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
 									Window w =MainActivity.this.getWindow();
 									w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 									w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS); w.setStatusBarColor(0xFF000000);
 								}
+								delay = new TimerTask() {
+									@Override
+									public void run() {
+										runOnUiThread(new Runnable() {
+											@Override
+											public void run() {
+												imageview1.setVisibility(View.VISIBLE);
+												textview4.setVisibility(View.VISIBLE);
+												textview3.setVisibility(View.VISIBLE);
+												vibrate.vibrate((long)(250));
+											}
+										});
+									}
+								};
+								_timer.schedule(delay, (int)(1000));
 							}
 						});
 					}
 				};
-				_timer.schedule(delay, (int)(100));
+				_timer.schedule(delay, (int)(1500));
 			}
 		});
 	}
